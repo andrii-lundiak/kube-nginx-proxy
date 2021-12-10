@@ -5,7 +5,7 @@
 [![](https://img.shields.io/docker/stars/kylemcc/kube-nginx-proxy.svg?style=flat)](https://hub.docker.com/r/kylemcc/kube-nginx-proxy 'DockerHub')
 [![](https://img.shields.io/docker/pulls/kylemcc/kube-nginx-proxy.svg?style=flat)](https://hub.docker.com/r/kylemcc/kube-nginx-proxy 'DockerHub')
 
-**Maintain Note**: Originally, repo was forked from [Kyle McCullough](https://github.com/kylemcc/kube-nginx-proxy) by Khaliq Gant [profile](https://github.com/khaliqgant/kube-nginx-proxy) and made relevant changes for using within Avinor. Now, Avinor as `avinor-ps` organization did a fork from Khaliq's version, and will continue to use it. Ideally, if Kyle merge [PR in his repo](https://github.com/kylemcc/kube-nginx-proxy/pull/6) (created by Khailq in 2020), then we can avoid using this fork and switch to orioginal package from intial author.
+**Maintain Note**: Originally, repo was forked from [Kyle McCullough](https://github.com/kylemcc/kube-nginx-proxy) by Khaliq Gant to his [profile](https://github.com/khaliqgant/kube-nginx-proxy). And Khaliq made relevant code changes for using within Avinor. Now, Avinor as `avinor-ps` organization did a fork from Khaliq's version, and will continue to use it. Ideally, if Kyle merge [PR in his repo](https://github.com/kylemcc/kube-nginx-proxy/pull/6) (created by Khailq in 2020), then we can avoid using this fork and switch to original package from intial author.
 
 
 `kube-nginx-proxy` is a Docker container running nginx and [kube-gen][1]. `kube-gen` watches for events on the Kubernetes API and generates nginx server blocks and reverse proxy configurations for Kubernetes Services and Pods as they are started and stopped.
