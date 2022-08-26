@@ -21,19 +21,16 @@ spec:
       #  kubernetes.io/hostname: <host>
       #  <label_name>: <label_value>
       containers:
-        -
-          name: "kube-nginx-proxy"
+        - name: "kube-nginx-proxy"
           image: "kylemcc/kube-nginx-proxy:0.1.3"
           resources:
             requests:
               cpu: "100m"
               memory: "256Mi"
           ports:
-            -
-              containerPort: 80
+            - containerPort: 80
               hostPort: 80
-            -
-              containerPort: 443
+            - containerPort: 443
               hostPort: 443
           imagePullPolicy: "Always"
           securityContext:
