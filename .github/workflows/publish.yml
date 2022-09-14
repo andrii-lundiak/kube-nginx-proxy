@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: "[Dockerhub] Docker login (github event_name: ${{ github.event_name }} | ref: ${{ github.ref }} | ref_name: ${{ github.ref_name }})"
+      - name: "[Dockerhub] Docker login (event_name: ${{ github.event_name }} | ref: ${{ github.ref }} | ref_name: ${{ github.ref_name }})"
         if: github.ref == 'refs/heads/master'
         uses: docker/login-action@v2
         with:
