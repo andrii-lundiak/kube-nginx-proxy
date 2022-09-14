@@ -8,7 +8,7 @@ on:
 name: Build and Publish
 
 env:
-  TEST_TAG: 0.4.4 # use latest when finish
+  TEST_TAG: ${{ github.ref_name }} # maybe use 'latest' when finish
 
 jobs:
   build_and_publish:
