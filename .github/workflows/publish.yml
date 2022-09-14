@@ -3,7 +3,7 @@ on:
     branches:
       - master
     tags:
-      - '*'
+      - "*"
   pull_request: {}
 name: Build and Publish
 jobs:
@@ -11,45 +11,67 @@ jobs:
     name: Build and Publish
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: '[Dockerhub] Docker login'
-      uses: actions/docker/login@master
-      env:
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-    - name: '[Github] Docker login'
-      uses: actions/docker/login@master
-      env:
-        DOCKER_PASSWORD: '${{ secrets.GH_DOCKER_PASSWORD }}'
-        DOCKER_USERNAME: $GITHUB_ACTOR
-        DOCKER_REGISTRY_URL: docker.pkg.github.com
-    - name: Build Image
-      uses: actions/docker/cli@master
-      with:
-        args: build -t kube-nginx-proxy .
-    - name: '[Dockerhub] Tag Image'
-      uses: actions/docker/tag@master
-      if: github.ref == 'refs/heads/master' || github.event_name == 'release'
-      with:
-        args: --env kube-nginx-proxy kylemcc/kube-nginx-proxy
-    - name: '[Github] Tag Image'
-      uses: actions/docker/tag@master
-      if: github.ref == 'refs/heads/master' || github.event_name == 'release'
-      with:
-        args: --env kube-nginx-proxy docker.pkg.github.com/kylemcc/kube-nginx-proxy/kube-nginx-proxy
-    - name: '[Dockerhub] Push Image'
-      uses: actions/docker/cli@master
-      if: github.ref == 'refs/heads/master' || github.event_name == 'release'
-      with:
-        args: push kylemcc/kube-nginx-proxy
-    - name: '[Github] Push Image'
-      uses: actions/docker/cli@master
-      if: github.ref == 'refs/heads/master' || github.event_name == 'release'
-      with:
-        args: push docker.pkg.github.com/kylemcc/kube-nginx-proxy/kube-nginx-proxy
-    - name: Send Slack Notification
-      uses: kylemcc/actions/slack-webhook@master
-      if: always() && (github.ref == 'refs/heads/master' || github.event_name == 'release')
-      env:
-        SLACK_MESSAGE: '$GITHUB_REPOSITORY: Build ${{ job.status }}'
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - uses: actions/checkout@master
+      - name: "[Dockerhub] Docker login"
+        if: github.ref == 'refs/heads/master' || github.event_name == 'release'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}  
+      - name: "[Github] Docker login"
+        if: github.ref == 'refs/heads/master' || github.event_name == 'release'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io # docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Set up Docker Buildx
+        if: github.ref == 'refs/heads/master' || github.event_name == 'release'
+        uses: docker/setup-buildx-action@v1
+      - name: Build and push
+        if: github.ref == 'refs/heads/master' || github.event_name == 'release'
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          # platforms: linux/amd64,linux/arm64 # by default linux.amd64
+          push: ${{ github.ref == 'refs/heads/master' || github.event_name == 'release' }}
+          tags: | 
+            ${{ secrets.DOCKERHUB_USERNAME }}/kube-nginx-proxy:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/kube-nginx-proxy:0.4.3
+            ghcr.io/andrii-lundiak/kube-nginx-proxy:latest
+            ghcr.io/andrii-lundiak/kube-nginx-proxy:0.4.3
+          # cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/kube-nginx-proxy:buildcache
+          # cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/kube-nginx-proxy:buildcache,mode=max
+      # OLD
+      # - name: Build Image
+      #   uses: actions/docker/cli@master
+      #   with:
+      #     args: build -t kube-nginx-proxy .
+      # - name: "[Dockerhub] Tag Image"
+      #   uses: actions/docker/tag@master
+      #   if: github.ref == 'refs/heads/master' || github.event_name == 'release'
+      #   with:
+      #     args: --env kube-nginx-proxy andrii-lundiak/kube-nginx-proxy
+      # - name: "[Github] Tag Image"
+      #   uses: actions/docker/tag@master
+      #   if: github.ref == 'refs/heads/master' || github.event_name == 'release'
+      #   with:
+      #     args: --env kube-nginx-proxy docker.pkg.github.com/andrii-lundiak/kube-nginx-proxy/kube-nginx-proxy
+      # - name: "[Dockerhub] Push Image"
+      #   uses: actions/docker/cli@master
+      #   if: github.ref == 'refs/heads/master' || github.event_name == 'release'
+      #   with:
+      #     args: push andrii-lundiak/kube-nginx-proxy
+      # - name: "[Github] Push Image"
+      #   uses: actions/docker/cli@master
+      #   if: github.ref == 'refs/heads/master' || github.event_name == 'release'
+      #   with:
+      #     args: push docker.pkg.github.com/andrii-lundiak/kube-nginx-proxy/kube-nginx-proxy
+
+      # TODO try for Horizon Slack
+      # - name: Send Slack Notification
+      #   uses: andrii-lundiak/actions/slack-webhook@master
+      #   if: always() && (github.ref == 'refs/heads/master' || github.event_name == 'release')
+      #   env:
+      #     SLACK_MESSAGE: "$GITHUB_REPOSITORY: Build ${{ job.status }}"
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -3,10 +3,13 @@
 
 Originally, repo was forked from [Kyle McCullough](https://github.com/kylemcc/kube-nginx-proxy) by Khaliq Gant to his [profile](https://github.com/khaliqgant/kube-nginx-proxy). And Khaliq made relevant code changes for using within Avinor. Now, Avinor as `avinor-ps` organization did a fork from Khaliq's version, and will continue to use it. Ideally, if Kyle merge [PR in his repo](https://github.com/kylemcc/kube-nginx-proxy/pull/6) (created by Khailq in 2020), then we can avoid using this fork and switch to original package from initial author.
 
-Khaliq did somehow deploy/publish fresh Docker images to GitHub Docker registry under his name - https://hub.docker.com/r/khaliqgant/kube-nginx-proxy/tags - latest `0.3.1` is used now in Avinor Horizon project. But under the hood, Docker image itself still depends on `kylemcc` packages `kube-gen`, `kube-nginx-proxy` and one public package `forego`.
+Kyle's Dockerhub - https://hub.docker.com/r/kylemcc/kube-nginx-proxy
 
-GitHub Actions `publish.yml` fails for org. `avinor-ps` and may not even executed because of payment issue. But we may need it in future.
+Khaliq did somehow deploy/publish fresh Docker images to GitHub Docker registry under his name - https://hub.docker.com/r/khaliqgant/kube-nginx-proxy/tags - latest `0.3.1` is used now in Avinor Horizon project. But under the hood, Docker image itself still depends on `kylemcc` package `kube-nginx-proxy` and his another `kube-gen@0.3.0` (last build in 2018) and one public package `forego@dev` (which is now NOT available from Equinox - [details](https://github.com/ddollar/forego/issues/127#issuecomment-1235245982) but there seems to be `jpillora` user's re-released latest version `1.0.4` (Dec-2021) - [details](https://github.com/jpillora/forego/releases)).
 
+GitHub Actions `publish.yml` fails for org. `avinor-ps` and may not be even executed because of payment issue. But we may need it in future.
+
+So far all depends on `nginx@1.14.2`.
 
 # kube-nginx-proxy
 ![latest 0.1.3](https://img.shields.io/badge/latest-0.1.3-green.svg?style=flat)
