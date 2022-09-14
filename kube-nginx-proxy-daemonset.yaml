@@ -4,7 +4,7 @@ metadata:
   name: "kube-nginx-proxy"
   labels:
     app: "kube-nginx-proxy"
-    version: "0.1.3"
+    version: "0.4.5"
   namespace: "dev"
   annotations:
     description: "nginx reverse proxy for services and pods powered by annotations"
@@ -22,7 +22,10 @@ spec:
       #  <label_name>: <label_value>
       containers:
         - name: "kube-nginx-proxy"
-          image: "kylemcc/kube-nginx-proxy:0.1.3"
+          # I was able to publish to my DockerHub account, because I don't have password to neither `avinor` nor `avinorps` accounts`
+          # This line means, that during Wildcard deployment exactly this version of package will be taken.
+          # In future here should be either: `avinorps/kube-nginx-proxy:latest` or `avinor/kube-nginx-proxy:latest` or `ghcr.io/avinor=ps/kube-nginx-proxy:latest`
+          image: "andriilundiak/kube-nginx-proxy:0.4.5"
           resources:
             requests:
               cpu: "100m"
