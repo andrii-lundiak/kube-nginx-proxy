@@ -10,7 +10,7 @@ name: Build and Publish
 env:
   TAG: ${{ github.ref_name }}
   IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags') }} # Another way to get event of Release (because github.event_name = 'push' and not 'release'). Seems to be GitHub Actions bug.
-  USE_DOCKERHUB: false
+  USE_DOCKERHUB: true
   USE_GHCR: true
   testStr: "event_name: ${{ github.event_name }} | ref: ${{ github.ref }} | ref_name: ${{ github.ref_name }}"
 
@@ -49,9 +49,9 @@ jobs:
           # platforms: linux/amd64,linux/arm64 # by default linux.amd64
           push: ${{ env.IS_RELEASE == 'true' }} 
           # to use DockerHub here, need to add below two tags lines:
-          # ${{ secrets.DOCKERHUB_USERNAME }}/kube-nginx-proxy:${{ env.TAG }}
-          # ${{ secrets.DOCKERHUB_USERNAME }}/kube-nginx-proxy:latest
-          tags: | 
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/kube-nginx-proxy:${{ env.TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/kube-nginx-proxy:latest
             ghcr.io/${{ github.repository_owner }}/kube-nginx-proxy:${{ env.TAG }}
             ghcr.io/${{ github.repository_owner }}/kube-nginx-proxy:latest
 
